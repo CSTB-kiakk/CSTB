@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Sze 17. 08:35
+-- Létrehozás ideje: 2025. Sze 17. 12:08
 -- Kiszolgáló verziója: 10.4.32-MariaDB
--- PHP verzió: 8.0.30
+-- PHP verzió: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -94,7 +94,8 @@ INSERT INTO `animals` (`id`, `shelter_id`, `species_id`, `breed_id`, `age`, `nam
 (3, 2, 4, 8, '3 év', 'Cirmi', 'cirmi.jpg', 'Nőstény', 'Maine Coon, nyugodt természetű', 'Available'),
 (4, 2, 1, 1, '5 év', 'Fekete', 'fekete.jpg', 'Hím', 'Lipicai ló, jó kondícióban', 'Available'),
 (5, 1, 5, 10, '6 hónap', 'Mogyoró', 'mogyoro.jpg', 'Nőstény', 'Tengerimalac gyerekek mellé', 'Available'),
-(6, 2, 2, 13, '2 év', 'Teki', 'teki.jpg', 'Hím', 'Közepes méretű teknős, nyugodt', 'Available');
+(6, 2, 2, 13, '2 év', 'Teki', 'teki.jpg', 'Hím', 'Közepes méretű teknős, nyugodt', 'Available'),
+(7, 3, 2, 4, '5', 'Loki', 'loki.jpg', 'Nőstény', 'Félénk Falánk, Barátságtalan gekkóka', 'Available');
 
 -- --------------------------------------------------------
 
@@ -177,6 +178,40 @@ INSERT INTO `donations` (`id`, `user_id`, `shelter_id`, `amount`, `status`, `cre
 -- --------------------------------------------------------
 
 --
+-- Tábla szerkezet ehhez a táblához `favorites`
+--
+
+CREATE TABLE `favorites` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `animal_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- A tábla adatainak kiíratása `favorites`
+--
+
+INSERT INTO `favorites` (`id`, `user_id`, `animal_id`, `created_at`) VALUES
+(1, 5, 1, '2025-09-17 09:17:00'),
+(2, 5, 2, '2025-09-17 09:19:23'),
+(3, 5, 3, '2025-09-17 09:57:31');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `migrations`
+--
+
+CREATE TABLE `migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Tábla szerkezet ehhez a táblához `shelters`
 --
 
@@ -189,7 +224,7 @@ CREATE TABLE `shelters` (
   `password` varchar(255) DEFAULT NULL,
   `description` text CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `remember_token` varchar(100) NOT NULL
+  `remember_token` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -199,7 +234,7 @@ CREATE TABLE `shelters` (
 INSERT INTO `shelters` (`id`, `name`, `location`, `contact_email`, `email`, `password`, `description`, `created_at`, `remember_token`) VALUES
 (1, 'Kaposvári Állatvédők', 'Kaposvár, Somogy', 'info@kaposvariallatvedok.hu', NULL, NULL, 'Kaposvßr k÷rnyÚki ßllatok mentÚse Ús ÷r÷kbeadßsa', '2025-09-12 06:54:19', ''),
 (2, 'Budapesti Menhely', 'Budapest, Pest', 'hello@budapestimenhely.hu', NULL, NULL, 'F§vßrosi ßllatment§ k÷zpont', '2025-09-12 06:54:19', ''),
-(3, 'Berzei Ferret Lak', '7454 Somodor József Attila utca 8', 'cinkikukac@gmail.com', 'cinkikukac@gmail.com', '$2y$10$wclvVZQG.S7oa1ZUvsYeG.FeOFSpPdV944FnL.ZVMvlok1Xt71I4C', 'Egy Varázslatos Állatmenhely büdi kis kedvenceinknek', '2025-09-16 10:32:59', 'QRQEztqHmphBfKgpBEhkmW2umSO1dNbYoN24z8p0FF3u9mIM3T07VPLp1HL7');
+(3, 'Berzei Ferret Lak', '7454 Somodor József Attila utca 8', 'cinkikukac@gmail.com', 'cinkikukac@gmail.com', '$2y$10$wclvVZQG.S7oa1ZUvsYeG.FeOFSpPdV944FnL.ZVMvlok1Xt71I4C', 'Egy Varázslatos Állatmenhely büdi kis kedvenceinknek', '2025-09-16 10:32:59', '9FkHQesWJaaqgPHprQkjXLbIwDxugiZ6sTqN3rJIHvkSbWiXENoTWD2ods7D');
 
 -- --------------------------------------------------------
 
@@ -239,7 +274,7 @@ CREATE TABLE `users` (
   `email` varchar(100) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `remember_token` varchar(100) NOT NULL
+  `remember_token` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -250,7 +285,8 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `role`, `email`, `password`,
 (1, 'Anna', 'Kov??cs', 'user', 'anna@example.com', 'hashedpassword1', '2025-09-12 06:54:19', ''),
 (2, 'Bence', 'Nagy', 'admin', 'bence@example.com', 'hashedpassword2', '2025-09-12 06:54:19', ''),
 (3, 'D??ra', 'T??th', 'user', 'dora@example.com', 'hashedpassword3', '2025-09-12 06:54:19', ''),
-(4, 'Nem', 'Dóra', 'user', 'nemdoratoth@gmail.com', '$2y$10$8UOyGFSfreHIQ1S5N.s45ehgQhSQTKfH6Bx8nb2uxGzkFr8LPVwRi', '2025-09-16 08:35:48', '6BMPPGvMti3lut8LadSdjLY4xjoJvhdsacgpcnLQslT0RvArJO7V2PZHTY1u');
+(4, 'Nem', 'Dóra', 'user', 'nemdoratoth@gmail.com', '$2y$10$8UOyGFSfreHIQ1S5N.s45ehgQhSQTKfH6Bx8nb2uxGzkFr8LPVwRi', '2025-09-16 08:35:48', '6BMPPGvMti3lut8LadSdjLY4xjoJvhdsacgpcnLQslT0RvArJO7V2PZHTY1u'),
+(5, 'Berze', 'Nem', 'user', 'Nem@gmail.com', '$2y$10$9wQgNX9W7VlzrqJejJffwu2n2QfcKYqCi8QZ53Kikn9bT4C8jTwa2', '2025-09-17 06:54:53', 'UEKGb30SqiQPW4y6UKDNd2HktdnCh4LxKcXiAJHfxqKybZ5UmH34RoyGz8Bp');
 
 --
 -- Indexek a kiírt táblákhoz
@@ -305,6 +341,21 @@ ALTER TABLE `donations`
   ADD KEY `shelter_id` (`shelter_id`);
 
 --
+-- A tábla indexei `favorites`
+--
+ALTER TABLE `favorites`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_animal_unique` (`user_id`,`animal_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `animal_id` (`animal_id`);
+
+--
+-- A tábla indexei `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- A tábla indexei `shelters`
 --
 ALTER TABLE `shelters`
@@ -343,7 +394,7 @@ ALTER TABLE `adoption_requests`
 -- AUTO_INCREMENT a táblához `animals`
 --
 ALTER TABLE `animals`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT a táblához `appointments`
@@ -364,6 +415,18 @@ ALTER TABLE `donations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT a táblához `favorites`
+--
+ALTER TABLE `favorites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT a táblához `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT a táblához `shelters`
 --
 ALTER TABLE `shelters`
@@ -379,7 +442,7 @@ ALTER TABLE `species`
 -- AUTO_INCREMENT a táblához `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Megkötések a kiírt táblákhoz
@@ -426,6 +489,13 @@ ALTER TABLE `breeds`
 ALTER TABLE `donations`
   ADD CONSTRAINT `donations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `donations_ibfk_2` FOREIGN KEY (`shelter_id`) REFERENCES `shelters` (`id`);
+
+--
+-- Megkötések a táblához `favorites`
+--
+ALTER TABLE `favorites`
+  ADD CONSTRAINT `favorites_animal_id_foreign` FOREIGN KEY (`animal_id`) REFERENCES `animals` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `favorites_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
